@@ -92,7 +92,7 @@ export async function GET(request) {
             tweet_media = media_urls.join(',');
         }
 
-        const card = resultTweet.card || resultTweet.tweet.card;
+        const card = resultTweet?.card || resultTweet?.tweet?.card;
         if(card && card.legacy&&card.legacy.binding_values){
             const value = card.legacy.binding_values[0].value.string_value;
             const valueJson = JSON.parse(value);
