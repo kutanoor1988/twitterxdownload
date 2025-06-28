@@ -77,5 +77,9 @@
   "Hide this tweet": "隱藏此推文",
   "Delete this tweet": "刪除此推文",
   "Hide all tweets from this account on homepage?": "確定在首頁隱藏該賬號的所有推文？",
-  "Hide this account": "隱藏此賬號"
+  "Hide this account": "隱藏此賬號",
+  "Show this tweet": "顯示此推文",
+  "Show this tweet on homepage?": "確定在首頁顯示此推文嗎？",
+  "Today": "今天",
+  "Post At": "發佈時間"
 }

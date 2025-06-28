@@ -78,5 +78,9 @@
   "Hide this tweet": "このツイートを非表示にする",
   "Delete this tweet": "このツイートを削除する",
   "Hide all tweets from this account on homepage?": "このアカウントのツイートをホームページから非表示にする？",
-  "Hide this account": "このアカウントを非表示にする"
+  "Hide this account": "このアカウントを非表示にする",
+  "Show this tweet": "このツイートを表示する",
+  "Show this tweet on homepage?": "ホームページからこのツイートを表示する？",
+  "Today": "今日",
+  "Post At": "投稿日時"
 } 

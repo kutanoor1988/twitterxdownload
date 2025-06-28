@@ -62,6 +62,27 @@ export default function TweetCard({ tweet,enableEdit = false,locale='en', classN
                     alert(t('Invalid admin password'));
                 }
             }
+        }else if(e === 'showtweet'){
+            let tempAdminPwd = '';
+            const confirmed = await ConfirmModal.show({
+                title: t('Warning'),
+                description: <>
+                    <div className="text-small text-default-400">{t('Hide this tweet from homepage?')}</div>
+                    <Input autoComplete="on" name="adminpwd" type="password" onChange={(e) => {tempAdminPwd=e.target.value}} placeholder={t('Please enter the admin password')} />
+                </>,
+                cancelText: t('Cancel'),
+                confirmText: t('Confirm')
+            });
+            if(!confirmed) return;
+    
+            if(tempAdminPwd.trim() !== ''){
+                const res = await fetch(`/api/tweet/show?tweet_id=${tweet.tweet_id}&adminpwd=${tempAdminPwd.trim()}`);
+                if(res.ok){
+                    if(window)window.location.reload();
+                }else{
+                    alert(t('Invalid admin password'));
+                }
+            }
         }else if(e === 'delete'){
             let tempAdminPwd = '';
             const confirmed = await ConfirmModal.show({
@@ -250,7 +271,7 @@ export default function TweetCard({ tweet,enableEdit = false,locale='en', classN
                                 </Button>
                             </DropdownTrigger>
                             <DropdownMenu aria-label="Static Actions" onAction={handleActions}>
-                                <DropdownItem key="hidetweet">{t('Hide this tweet')}</DropdownItem>
+                                <DropdownItem key="showtweet">{t('Show this tweet on homepage')}</DropdownItem>
                                 <DropdownItem key="delete">{t('Delete this tweet')}</DropdownItem>
                                 <DropdownItem key="hideaccount">{t('Hide this account')}</DropdownItem>
                             </DropdownMenu>

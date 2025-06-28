@@ -78,5 +78,9 @@
   "Hide this tweet": "Masquer ce tweet",
   "Delete this tweet": "Supprimer ce tweet",
   "Hide all tweets from this account on homepage?": "Masquer tous les tweets de ce compte sur la page d'accueil ?",
-  "Hide this account": "Masquer ce compte"
+  "Hide this account": "Masquer ce compte",
+  "Show this tweet": "Afficher ce tweet",
+  "Show this tweet on homepage?": "Afficher ce tweet sur la page d'accueil ?",
+  "Today": "Aujourd'hui",
+  "Post At": "Publié le"
 } 

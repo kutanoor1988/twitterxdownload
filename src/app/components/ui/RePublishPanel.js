@@ -1,7 +1,7 @@
 'use client';
 import { Input, Button } from '@heroui/react';
 import { getTranslation } from '@/lib/i18n';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import XAPI from '@/lib/xapi';
 
 export default function RePublishPanel({ locale ='en',tweets,onClose }) {
@@ -95,6 +95,10 @@ export default function RePublishPanel({ locale ='en',tweets,onClose }) {
 
         setIsLoading(false);
     }
+
+    useEffect(() => {
+        showPublishNotice(t(`You will publish ${tweets.length} tweets`),'success');
+    }, [tweets]);
 
     return (
         <>

@@ -9,7 +9,7 @@ const tweetsSchema = new mongoose.Schema({
   tweet_media: { type: String },
   tweet_threadscount: { type: Number },
   tweet_data: { type: String, required: true },
-  is_hidden: { type: Number, default: 0 },
+  is_hidden: { type: Number, default: 1 },
   post_at: { type: Date , default: Date.now },
   created_at: { type: Date, default: Date.now }
 },{

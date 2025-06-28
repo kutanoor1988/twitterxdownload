@@ -119,6 +119,8 @@ count = allData.length;
         // 时间范围过滤
         if (date_range === 'week') {
             query.post_at = { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) };
+        } else if (date_range === 'today') {
+            query.post_at = { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) };
         } else if (date_range === 'month') {
             query.post_at = { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) };
         } else if (date_range === 'quarter') {

@@ -27,6 +27,7 @@ export default function Tweets({ params: { locale } }) {
 
     const dateRanges = [
         { key: "all", label: t('All') },
+        { key: "today", label: t('Today') },
         { key: "week", label: t('Week') },
         { key: "month", label: t('Month') },
         { key: "quarter", label: t('Quarter') }
@@ -50,10 +51,6 @@ export default function Tweets({ params: { locale } }) {
     }, [shouldSearch]);
 
     const handleSearch = async () => {
-
-        if(!name.trim() && !screen_name.trim() && !text.trim()){
-            return;
-        }
 
         setLoading(true);
 
@@ -192,7 +189,7 @@ export default function Tweets({ params: { locale } }) {
                         <div className='w-1/2 min-w-[110px]'>
                             <Select
                                 disabled={loading}
-                                label={t('Date Range')}
+                                label={t('Post At')}
                                 variant="underlined"
                                 defaultSelectedKeys={["all"]}
                                 value={date_range}
