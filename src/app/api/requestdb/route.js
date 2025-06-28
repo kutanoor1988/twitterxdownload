@@ -2,6 +2,7 @@
 import dbConnect from '@/lib/db';
 import Tweets from '@/lib/models/tweets';
 import Hiddens from '@/lib/models/hiddens';
+import { ObjectId } from 'mongodb';
 
 const HIDDEN_KEYWORDS_REGEX = process.env.HIDDEN_KEYWORDS? process.env.HIDDEN_KEYWORDS.replace(/,/g, '|') : '';
 
@@ -29,7 +30,6 @@ export async function GET(request) {
         screen_name: { $not: { $regex: hiddenScreenNames, $options: 'i' } },
         name: { $not: { $regex: HIDDEN_KEYWORDS_REGEX, $options: 'i' } },
         tweet_text: { $not: { $regex: HIDDEN_KEYWORDS_REGEX, $options: 'i' } },
-        is_hidden: { $ne: 1 }, 
         tweet_media: { $ne: null, $ne: '' }
     };
 
@@ -41,7 +41,8 @@ export async function GET(request) {
           $facet: {
             data: [
               { $match: { 
-                ...baseFilter
+                ...baseFilter,
+                is_hidden: { $ne: 1 }
               } },
               { $sort: { created_at: -1 } }, 
               { $limit: 15 }
@@ -69,7 +70,8 @@ count = allData.length;
     } else if (action === 'creators') {
       allData = await Tweets.aggregate([
         { $match: {
-          ...baseFilter
+          ...baseFilter,
+          is_hidden: { $ne: 1 }
         } },
         { $group: {
           _id: "$screen_name", 
@@ -97,6 +99,8 @@ count = allData.length;
         const text = searchParams.get('text');
         const content_type = searchParams.get('content_type');
         const date_range = searchParams.get('date_range');
+        const cursor = searchParams.get('cursor') || null;
+        const limit = 20;
 
         // 构建查询条件
         const query = {
@@ -127,11 +131,22 @@ count = allData.length;
             query.post_at = { $gte: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000) };
         }
 
+        // 如果有cursor，添加分页条件
+        if (cursor && cursor !== '0') {
+          try {
+              query._id = { $lt: new ObjectId(cursor) };
+          } catch (e) {
+              // 如果cursor格式无效，忽略分页
+              console.warn('Invalid cursor:', cursor);
+          }
+        }
+
         // 执行查询并获取结果
         const result = await Tweets.aggregate([
             { $match: query },
+            { $project: { tweet_data: 0 } },
             { $sort: { post_at: -1 } },
-            { $limit: 15 }
+            { $limit: limit }
         ]);
 
         allData = result;

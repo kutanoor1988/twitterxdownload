@@ -39,6 +39,7 @@ export default function Tweets({ params: { locale } }) {
     const [content_type, setContentType] = useState('all');
     const [date_range, setDateRange] = useState('all');
     const [loading, setLoading] = useState(false);
+    const [lastTweetId, setLastTweetId] = useState(null);
     const [tweets, setTweets] = useState([[], [], []]);
 
     const [shouldSearch, setShouldSearch] = useState(name || screen_name || text);
@@ -50,23 +51,44 @@ export default function Tweets({ params: { locale } }) {
         }
     }, [shouldSearch]);
 
-    const handleSearch = async () => {
-
+    const handleSearch = async ({cursor=null}) => {
+        if(loading) return;
         setLoading(true);
 
-        router.replace(`/tweets?name=${name}&screen_name=${screen_name}&text=${text}`);
+        // 保存当前滚动位置
+        const currentScrollPosition = window.scrollY;
 
-        const response = await fetch(`/api/requestdb?action=search&name=${name}&screen_name=${screen_name}&text=${text}&content_type=${content_type}&date_range=${date_range}`);
+        router.replace(`/tweets?${name ? `name=${name}&` : ''}${screen_name ? `screen_name=${screen_name}&` : ''}${text ? `text=${text}&` : ''}`);
+
+        const response = await fetch(`/api/requestdb?action=search&name=${name}&screen_name=${screen_name}&text=${text}&content_type=${content_type}&date_range=${date_range}&cursor=${cursor}`);
         const data = await response.json();
+        setLastTweetId(data.data[data.data.length - 1]._id);
         
-        const newTweets = [[], [], []];
-        data.data.forEach((tweet, index) => {
-            newTweets[index % 3].push({
-                ...tweet,
-                tweet_media: tweet.tweet_media ? tweet.tweet_media.split(',') : []
+        if (cursor) {
+            // 加载更多：使用函数式更新，只追加新数据
+            setTweets(prevTweets => {
+                const newTweets = [...prevTweets.map(row => [...row])]; // 深拷贝
+                data.data.forEach((tweet, index) => {
+                    newTweets[index % 3].push({
+                        ...tweet,
+                        tweet_media: tweet.tweet_media ? tweet.tweet_media.split(',') : []
+                    });
+                });
+                return newTweets;
             });
-        });
-        setTweets(newTweets);
+        } else {
+            // 新搜索：重置数据
+            const newTweets = [[], [], []];
+            data.data.forEach((tweet, index) => {
+                newTweets[index % 3].push({
+                    ...tweet,
+                    tweet_media: tweet.tweet_media ? tweet.tweet_media.split(',') : []
+                });
+            });
+            setTweets(newTweets);
+        }
+        // 恢复滚动位置
+        window.scrollTo(0, currentScrollPosition);
         setLoading(false);
     }
 
@@ -208,15 +230,22 @@ export default function Tweets({ params: { locale } }) {
                     </div>
                 </h3>
                 {tweets.some(row => row.length > 0) ? (
-                    <div className="flex justify-between gap-5 mt-8 flex-wrap md:flex-nowrap">
-                        {tweets.map((row, index) => (
-                            <div key={index} className="w-full md:w-1/3 flex flex-col gap-5">
-                                {row.map((tweet) => (
-                                    <TweetCard locale={locale} key={tweet.tweet_id} tweet={tweet} />
-                                ))}
-                            </div>
-                        ))}
-                    </div>
+                    <>
+                        <div className="flex justify-between gap-5 mt-8 flex-wrap md:flex-nowrap">
+                            {tweets.map((row, index) => (
+                                <div key={index} className="w-full md:w-1/3 flex flex-col gap-5">
+                                    {row.map((tweet) => (
+                                        <TweetCard locale={locale} key={tweet.tweet_id} tweet={tweet} />
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                        <div className="flex justify-center">
+                            <Button isLoading={loading} isDisabled={loading} color="primary" variant="light" size="lg" radius="xs" className="px-8 mt-4 flex-1 md:flex-none" onPress={() => handleSearch({cursor:lastTweetId})}>
+                                {t('Load More')}
+                            </Button>
+                        </div>
+                    </>
                 ) : (
                     <div className="text-center py-44 text-default-500">
                         <RiSearchLine size={48} className="mx-auto mb-4 opacity-50" />
