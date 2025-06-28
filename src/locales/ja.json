@@ -82,5 +82,8 @@
   "Show this tweet": "このツイートを表示する",
   "Show this tweet on homepage?": "ホームページからこのツイートを表示する？",
   "Today": "今日",
-  "Post At": "投稿日時"
+  "Post At": "投稿日時",
+  "Import API keys": "APIキーをインポート",
+  "Export API keys": "APIキーをエクスポート",
+  "Invalid API keys": "無効なAPIキー"
 } 

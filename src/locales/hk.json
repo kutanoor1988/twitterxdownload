@@ -81,5 +81,8 @@
   "Show this tweet": "顯示此推文",
   "Show this tweet on homepage?": "確定在首頁顯示此推文嗎？",
   "Today": "今天",
-  "Post At": "發佈時間"
+  "Post At": "發佈時間",
+  "Import API keys": "導入API密鑰",
+  "Export API keys": "導出API密鑰",
+  "Invalid API keys": "無效的API密鑰文件"
 }

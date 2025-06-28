@@ -82,5 +82,8 @@
   "Show this tweet": "Show this tweet",
   "Show this tweet on homepage?": "Show this tweet on homepage?",
   "Today": "Today",
-  "Post At": "Post At"
+  "Post At": "Post At",
+  "Import API keys": "Import API keys",
+  "Export API keys": "Export API keys",
+  "Invalid API keys": "Invalid API keys"
 } 

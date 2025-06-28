@@ -114,6 +114,56 @@ export default function RePublishPanel({ locale ='en',tweets,onClose }) {
                 <p className="text-sm text-default-500">
                     {t('Go to https://developer.x.com to get your API keys. Free plan is Enough, your API keys will only stored in your browser.')}
                 </p>
+                <div className="flex justify-end">
+                    <Button variant="light" size="sm" onPress={() => {
+                        // open a file and read the content
+                        const file = document.createElement('input');
+                        file.type = 'file';
+                        file.accept = '.json';
+                        file.onchange = (e) => {
+                            const file = e.target.files[0];
+                            const reader = new FileReader();
+                            reader.onload = (e) => {
+                                const config = JSON.parse(e.target.result);
+                                console.log(config);
+                                if(config.consumerApiKey && config.consumerApiKeySecret && config.accessToken && config.accessTokenSecret){ 
+                                    setConsumerApiKey(config.consumerApiKey);
+                                    setConsumerApiKeySecret(config.consumerApiKeySecret);
+                                    setAccessToken(config.accessToken);
+                                    setAccessTokenSecret(config.accessTokenSecret);
+                                    updateConfig('consumerApiKey', config.consumerApiKey);
+                                    updateConfig('consumerApiKeySecret', config.consumerApiKeySecret);
+                                    updateConfig('accessToken', config.accessToken);
+                                    updateConfig('accessTokenSecret', config.accessTokenSecret);
+                                }else{
+                                    showPublishNotice(t('Invalid API keys'));
+                                }
+                            }
+                            reader.readAsText(file);
+                        }
+                        document.body.appendChild(file);
+                        file.click();
+                        document.body.removeChild(file);
+                    }}>
+                       {t('Import API keys')}
+                    </Button>
+                    <Button variant="light" size="sm" onPress={() => {
+                        // download a file with the content
+                        const file = new File([JSON.stringify({
+                            consumerApiKey,
+                            consumerApiKeySecret,
+                            accessToken,
+                            accessTokenSecret
+                        })], 'twitterApiConfig.json', { type: 'application/json' });
+                        const url = URL.createObjectURL(file);
+                        const a = document.createElement('a');  
+                        a.href = url;
+                        a.download = 'twitterApiConfig.json';
+                        a.click();
+                    }}>
+                       {t('Export API keys')}
+                    </Button>
+                </div>
                 <div className="flex flex-col gap-2">
                     <Input
                         isDisabled={isLoading}

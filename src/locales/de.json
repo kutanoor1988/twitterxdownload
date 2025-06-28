@@ -82,5 +82,8 @@
   "Show this tweet": "Diesen Tweet auf der Startseite anzeigen",
   "Show this tweet on homepage?": "Diesen Tweet auf der Startseite anzeigen?",
   "Today": "Heute",
-  "Post At": "Veröffentlicht am"
+  "Post At": "Veröffentlicht am",
+  "Import API keys": "API-Schlüssel importieren",
+  "Export API keys": "API-Schlüssel exportieren",
+  "Invalid API keys": "Ungültige API-Schlüssel-Datei"
 } 

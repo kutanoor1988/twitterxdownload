@@ -82,5 +82,8 @@
   "Show this tweet": "Bu tweeti göster",
   "Show this tweet on homepage?": "Bu tweeti ana sayfada göster?",
   "Today": "Bugün",
-  "Post At": "Yayınlanma Tarihi"
+  "Post At": "Yayınlanma Tarihi",
+  "Import API keys": "API anahtarlarını içe aktar",
+  "Export API keys": "API anahtarlarını dışa aktar",
+  "Invalid API keys": "Geçersiz API anahtarları"
 } 

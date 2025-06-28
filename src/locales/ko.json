@@ -82,5 +82,8 @@
   "Show this tweet": "이 트윗을 홈페이지에서 표시하기",
   "Show this tweet on homepage?": "홈페이지에서 이 트윗을 표시하기?",
   "Today": "오늘",
-  "Post At": "게시 시간"
+  "Post At": "게시 시간",
+  "Import API keys": "API 키 가져오기",
+  "Export API keys": "API 키 내보내기",
+  "Invalid API keys": "잘못된 API 키"
 } 
