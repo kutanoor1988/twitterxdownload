@@ -2,7 +2,7 @@
 import { Input, Select, SelectItem, Button,Spinner } from "@heroui/react";
 import { RiSearchLine } from "@remixicon/react";
 import { getTranslation } from "@/lib/i18n";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import TweetCard from "@/app/components/ui/TweetCard";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -51,45 +51,39 @@ export default function Tweets({ params: { locale } }) {
         }
     }, [shouldSearch]);
 
-    const handleSearch = async ({cursor=null}) => {
+    const handleSearch = async ({cursor=null}={}) => {
         if(loading) return;
         setLoading(true);
 
-        // 保存当前滚动位置
-        const currentScrollPosition = window.scrollY;
-
-        router.replace(`/tweets?${name ? `name=${name}&` : ''}${screen_name ? `screen_name=${screen_name}&` : ''}${text ? `text=${text}&` : ''}`);
-
         const response = await fetch(`/api/requestdb?action=search&name=${name}&screen_name=${screen_name}&text=${text}&content_type=${content_type}&date_range=${date_range}&cursor=${cursor}`);
         const data = await response.json();
-        setLastTweetId(data.data[data.data.length - 1]._id);
+
+        if(data.data.length > 0) setLastTweetId(data.data[data.data.length - 1]._id);
         
-        if (cursor) {
-            // 加载更多：使用函数式更新，只追加新数据
-            setTweets(prevTweets => {
-                const newTweets = [...prevTweets.map(row => [...row])]; // 深拷贝
-                data.data.forEach((tweet, index) => {
-                    newTweets[index % 3].push({
-                        ...tweet,
-                        tweet_media: tweet.tweet_media ? tweet.tweet_media.split(',') : []
-                    });
-                });
-                return newTweets;
-            });
-        } else {
-            // 新搜索：重置数据
-            const newTweets = [[], [], []];
+        setTweets(prevTweets => {
+            let targetTweets;
+    
+            if (cursor) {
+                // 加载更多：基于现有数据
+                targetTweets = prevTweets.map(row => [...row]); // 深拷贝现有数据
+            } else {
+                // 新搜索：但不创建全新数组，而是清空现有数组
+                targetTweets = prevTweets.map(() => []); // 清空但保持数组引用
+            }
+            
+            // 添加新数据
             data.data.forEach((tweet, index) => {
-                newTweets[index % 3].push({
+                targetTweets[index % 3].push({
                     ...tweet,
                     tweet_media: tweet.tweet_media ? tweet.tweet_media.split(',') : []
                 });
             });
-            setTweets(newTweets);
-        }
-        // 恢复滚动位置
-        window.scrollTo(0, currentScrollPosition);
+            
+            return targetTweets;
+        });
         setLoading(false);
+
+        if(!cursor) router.replace(`/tweets?${name ? `name=${name}&` : ''}${screen_name ? `screen_name=${screen_name}&` : ''}${text ? `text=${text}&` : ''}`);
     }
 
     const handleClear = () => {
