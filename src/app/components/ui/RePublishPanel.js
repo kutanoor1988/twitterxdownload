@@ -3,6 +3,7 @@ import { Input, Button } from '@heroui/react';
 import { getTranslation } from '@/lib/i18n';
 import { useState, useEffect } from 'react';
 import XAPI from '@/lib/xapi';
+import { RiEyeLine, RiEyeOffLine } from '@remixicon/react';
 
 export default function RePublishPanel({ locale ='en',tweets,onClose }) {
     const t = function (key) {
@@ -24,6 +25,10 @@ export default function RePublishPanel({ locale ='en',tweets,onClose }) {
     const [consumerApiKeySecret, setConsumerApiKeySecret] = useState(twitterApiConfig.consumerApiKeySecret);
     const [accessToken, setAccessToken] = useState(twitterApiConfig.accessToken);
     const [accessTokenSecret, setAccessTokenSecret] = useState(twitterApiConfig.accessTokenSecret);
+    const [consumerApiKeyHidden, setConsumerApiKeyHidden] = useState(true);
+    const [consumerApiKeySecretHidden, setConsumerApiKeySecretHidden] = useState(true);
+    const [accessTokenHidden, setAccessTokenHidden] = useState(true);
+    const [accessTokenSecretHidden, setAccessTokenSecretHidden] = useState(true);
 
     // 更新 localStorage 的辅助函数
     const updateConfig = (key, value) => {
@@ -113,7 +118,10 @@ export default function RePublishPanel({ locale ='en',tweets,onClose }) {
                     <Input
                         isDisabled={isLoading}
                         label="Consumer API Key"
-                        type="text"
+                        type={consumerApiKeyHidden ? 'password' : 'text'}
+                        endContent={<Button isIconOnly variant="light" size="sm" onPress={() => setConsumerApiKeyHidden(!consumerApiKeyHidden)}>
+                            {consumerApiKeyHidden ? <RiEyeLine /> : <RiEyeOffLine />}
+                        </Button>}
                         className="w-full"
                         placeholder=""
                         value={consumerApiKey}
@@ -127,7 +135,10 @@ export default function RePublishPanel({ locale ='en',tweets,onClose }) {
                     <Input
                         isDisabled={isLoading}
                         label="Consumer API Key Secret"
-                        type="text"
+                        type={consumerApiKeySecretHidden ? 'password' : 'text'}
+                        endContent={<Button isIconOnly variant="light" size="sm" onPress={() => setConsumerApiKeySecretHidden(!consumerApiKeySecretHidden)}>
+                            {consumerApiKeySecretHidden ? <RiEyeLine /> : <RiEyeOffLine />}
+                        </Button>}
                         className="w-full"
                         placeholder=""
                         value={consumerApiKeySecret}
@@ -141,7 +152,10 @@ export default function RePublishPanel({ locale ='en',tweets,onClose }) {
                     <Input
                         isDisabled={isLoading}
                         label="Access Token"
-                        type="text"
+                        type={accessTokenHidden ? 'password' : 'text'}
+                        endContent={<Button isIconOnly variant="light" size="sm" onPress={() => setAccessTokenHidden(!accessTokenHidden)}>
+                            {accessTokenHidden ? <RiEyeLine /> : <RiEyeOffLine />}
+                        </Button>}
                         className="w-full"
                         placeholder=""
                         value={accessToken}
@@ -155,7 +169,10 @@ export default function RePublishPanel({ locale ='en',tweets,onClose }) {
                     <Input
                         isDisabled={isLoading}
                         label="Access Token Secret"
-                        type="text"
+                        type={accessTokenSecretHidden ? 'password' : 'text'}
+                        endContent={<Button isIconOnly variant="light" size="sm" onPress={() => setAccessTokenSecretHidden(!accessTokenSecretHidden)}>
+                            {accessTokenSecretHidden ? <RiEyeLine /> : <RiEyeOffLine />}
+                        </Button>}
                         className="w-full"
                         placeholder=""
                         value={accessTokenSecret}
