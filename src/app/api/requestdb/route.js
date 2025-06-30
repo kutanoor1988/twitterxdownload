@@ -44,7 +44,10 @@ export async function GET(request) {
                 ...baseFilter,
                 is_hidden: { $ne: 1 }
               } },
-              { $sort: { created_at: -1 } }, 
+              { $sort: { created_at: -1 } },
+              { $project: {
+                tweet_data: 0
+              }},
               { $limit: 15 }
             ],
             count: [

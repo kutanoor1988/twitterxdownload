@@ -1,31 +1,49 @@
-import { Chip } from "@heroui/react";
+'use client'
+import { Chip, Skeleton,Spinner } from "@heroui/react";
 import { getTranslation } from "@/lib/i18n";
 import TweetCard from './TweetCard';
-import { headers } from 'next/headers'
+import { useEffect, useState } from 'react';
 
-export default async function HotTweets({ locale = 'en' }) {
+export default function HotTweets({ locale = 'en' }) {
     const t = function (key) {
         return getTranslation(locale, key);
     }
 
-    const headersList = await headers()
-    const host = headersList.get('host')
-    const protocol = headersList.get('x-forwarded-proto') || 'http'
-    const baseUrl = `${protocol}://${host}`
-    const tweetsResp = await fetch(`${baseUrl}/api/requestdb?action=recent`,{
-        cache: 'no-store'
-    });
-    const tweetsData = await tweetsResp.json();
-    
-    const totalCount = tweetsData.count;
+    const [tweets, setTweets] = useState([]);
+    const [totalCount, setTotalCount] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const tweets = [[], [], []];
-    tweetsData.data.forEach((tweet, index) => {
-        tweets[index % 3].push({
-            ...tweet,
-            tweet_media: tweet.tweet_media ? tweet.tweet_media.split(',') : []
-        });
-    });
+    useEffect(() => {
+        const fetchTweets = async () => {
+            const tweetsResp = await fetch(`/api/requestdb?action=recent`,{
+                cache: 'no-store'
+            });
+            const tweetsData = await tweetsResp.json();
+            const totalCount = tweetsData.count;
+            const tweets = [[], [], []];
+            tweetsData.data.forEach((tweet, index) => {
+                tweets[index % 3].push({
+                    ...tweet,
+                    tweet_media: tweet.tweet_media ? tweet.tweet_media.split(',') : []
+                });
+            });
+            setTweets(tweets);
+            setTotalCount(totalCount);
+            setIsLoading(false);
+        }
+        fetchTweets();
+    }, []);
+
+    if (isLoading) {
+        return (
+            <>
+                <div className="text-2xl font-bold px-2 py-4 flex">
+                    <div>{t('Hot Tweets')}</div>
+                    <Spinner size="sm" color="primary" className="ml-2" />
+                </div>
+            </>
+        );
+    }
 
     return (
         <>
